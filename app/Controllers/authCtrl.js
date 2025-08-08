@@ -6,11 +6,18 @@ router.post('/login', async function (req, res) {
   try {
     const data = req.body;
     const result = await regUser.loginUser(data);
+    if (result && result.success) {
+      return res.status(200).json({
+        success: true,
+        message: result.message,
+        token: result.token,       
+        user: result.user         
+      });
+    }
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      data: result
+    return res.status(401).json({
+      success: false,
+      message: result.message || "Login failed"
     });
 
   } catch (error) {
@@ -39,15 +46,18 @@ router.post('/login', async function (req, res) {
   }
 });
 
-router.post('/signin', async function(req,res,next){
-    try{
-        const data = req.body;
-        const result = await regUser.signinUser(data)
-        res.status(201).json({success:true,message:'User Registered successfully',data:result})
-    } catch(error){
-        res.status(500).json({success:false, message:error.message || "Internal Server Message"})
-    }
-    
-})
+router.post('/signin', async function(req, res, next) {
+  try {
+    const data = req.body;
+    const result = await regUser.signinUser(data);
+
+    res.status(201).json(result); // ✅ Send result directly
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Internal Server Error"
+    });
+  }
+});
 
 module.exports=router;

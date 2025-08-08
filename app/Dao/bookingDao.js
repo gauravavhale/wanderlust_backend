@@ -1,10 +1,11 @@
+require('dotenv').config();
 var mongo = require ('mongodb')
 
 
 async function bookingDao(data){
     try{
     const mongoClient = mongo.MongoClient
-    const mongoServer = await mongoClient.connect('mongodb+srv://avhalegaurav07:broispro.07@swift-cart.ajzmudj.mongodb.net/')
+    const mongoServer = await mongoClient.connect(process.env.MONGO_URI)
     const db = mongoServer.db('Travel-Agency')
     const collection = db.collection('bookings')
     const result = await collection.insertOne(data)
